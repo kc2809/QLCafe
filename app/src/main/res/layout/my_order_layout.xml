@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/linearLayout">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/received"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Received"
+            android:layout_gravity="center"
+            android:textSize="12dp"/>
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/preparing"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preparing"
+            android:layout_gravity="center"
+            android:textSize="12dp"/>
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/prepared"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prepared"
+            android:layout_gravity="center"
+            android:textSize="12dp"/>
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/served"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Served"
+            android:layout_gravity="center"
+            android:textSize="12dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#009F9F"
+        android:layout_below="@+id/linearLayout"
+        android:layout_height="40dp"
+        android:id="@+id/relativeLayout">
+
+        <TextView
+            android:textSize="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="Total Order: "
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25000 VND"
+            android:id="@+id/tvTotal"
+            android:textSize="25dp"
+            android:textColor="#ffffff"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Detail"
+        android:gravity="left|center"
+        android:id="@+id/textView5"
+        android:paddingLeft="10dp"
+        android:textSize="20dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#ff000000"
+        android:textColor="#ffffff" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvDetailOrder"
+        android:dividerHeight="10dip"
+        android:divider="@null"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView5"
+        android:layout_above="@+id/btnConfirm" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="Clear All Order"
+        android:id="@+id/btnClearOrder"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/lvDetailOrder"
+        android:layout_alignStart="@+id/lvDetailOrder"
+        android:layout_alignRight="@+id/lvDetailOrder"
+        android:layout_alignEnd="@+id/lvDetailOrder"
+        android:background="#ff009f9f"
+        android:textSize="15dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="Confirm"
+        android:id="@+id/btnConfirm"
+        android:layout_above="@+id/btnClearOrder"
+        android:layout_alignLeft="@+id/btnClearOrder"
+        android:layout_alignStart="@+id/btnClearOrder"
+        android:layout_alignRight="@+id/btnClearOrder"
+        android:layout_alignEnd="@+id/btnClearOrder"
+
+        android:background="#ff009f9f"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="0dp"
+        android:textSize="15dp" />
+</RelativeLayout>

@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrator.qlcafe.OrderActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="#009F9F">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Table 1 -> Order "
+            android:textSize="25dp"
+            android:layout_gravity="left|center"
+            android:textColor="#ffffff"
+            android:id="@+id/textView8" />
+    </LinearLayout>
+
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tabHost">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <view
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="android.support.v4.view.ViewPager"
+                    android:id="@+id/view"
+                    android:layout_gravity="center_horizontal" />
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+
+
+</LinearLayout>
