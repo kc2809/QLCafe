@@ -1,71 +1,144 @@
 package com.example.administrator.qlcafe.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 10/20/2016.
  */
 public class Order {
-    int id;
-    String nameProduct;
-    int quantity;
-    float price;
-    int status;
+    int idBan;
+
+
+    ArrayList<ItemOrder> dsOrder= new ArrayList<>();
 
 
     public Order() {
     }
 
-    public Order(String nameProduct, int quantity, float price, int status) {
-        this.nameProduct = nameProduct;
-        this.quantity = quantity;
-        this.price = price;
-        this.status = status;
+    public void comfirmOrder(){
+        for(int i =0;i<dsOrder.size();i++){
+            dsOrder.get(i).setTrangThai(1);
+        }
+
+        //gop trang thai
+        if(dsOrder.size()>2){
+            System.out.println("I'M HERERERE " +toString());
+            int i =0;
+            while(i<dsOrder.size()-1){
+                for(int j=i+1;j<dsOrder.size();++j){
+                    if(dsOrder.get(i).getIdMon() == dsOrder.get(j).getIdMon()){
+                        System.out.println("BANG NHAU"+ dsOrder.size());
+                        dsOrder.get(i).setSoLuong(dsOrder.get(i).getSoLuong()+ dsOrder.get(j).getSoLuong());
+                        dsOrder.remove(j);
+                    }
+                }
+                i++;
+            }
+            System.out.println("@@@@@@@SO LUONG"+ dsOrder.size());
+        }
+
     }
 
-    public Order(int id, String nameProduct, int quantity, float price, int status) {
-        this.id = id;
-        this.nameProduct = nameProduct;
-        this.quantity = quantity;
-        this.price = price;
-        this.status = status;
+    public void checkValidateOrder(int idMon,int soLuong){
+        int check = 0;
+        int k=0;
+        for(int i=0;i<dsOrder.size();++i){
+            if(dsOrder.get(i).getIdMon() == idMon){
+                check = 1;
+                k=i;
+            }
+        }
+        //neu da~ co mon an
+        if(check == 1){
+            //neu mon an da duoc order roi
+            if(dsOrder.get(k).getTrangThai()==1){
+               check =2;
+            }
+        }
+
+        //neu chua co mon an hoac da duoc order roi
+        if(check == 0 || check ==2){
+            //add to list
+            ItemOrder item = new ItemOrder(idMon,soLuong,0);
+            dsOrder.add(item);
+        }
+        //neu co mon an va chua order
+        if(check == 1){
+            dsOrder.get(k).setSoLuong(dsOrder.get(k).getSoLuong() + soLuong);
+        }
     }
 
-    public int getStatus() {
-        return status;
+
+    public void updateQuantity(int idMon,int SoLuong){
+        for(int i=0;i<dsOrder.size();++i){
+            if(dsOrder.get(i).getIdMon() == idMon){
+
+            }
+        }
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public Order(int idBan,String dsMon,String dsSL,String dsTT){
+        this.idBan = idBan;
+       setDsOrderByString(dsMon,dsSL,dsTT);
     }
 
-    public int getId() {
-        return id;
+    public void setDsOrderByString(String dsMon,String dsSoLuong,String dsTT){
+        String [] arrMon = dsMon.split("/");
+        String [] arrSoLuong = dsSoLuong.split("/");
+        String [] arrTT = dsTT.split("/");
+
+        for(int i=0;i<arrMon.length;++i){
+            ItemOrder item = new ItemOrder(Integer.parseInt(arrMon[i]),Integer.parseInt(arrSoLuong[i]),Integer.parseInt(arrTT[i]));
+            dsOrder.add(item);
+        }
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getStringDSMon(){
+        String result = "";
+        for(int i=0;i<dsOrder.size();++i){
+            result+= dsOrder.get(i).getIdMon()+"/";
+        }
+
+        return result;
     }
 
-    public String getNameProduct() {
-        return nameProduct;
+    public String getStringDSSoLuong(){
+        String result = "";
+        for(int i=0;i<dsOrder.size();++i){
+            result+= dsOrder.get(i).getSoLuong()+"/";
+        }
+
+        return result;
+    }
+    public String getStringDSTrangThai(){
+        String result = "";
+        for(int i=0;i<dsOrder.size();++i){
+            result+= dsOrder.get(i).getTrangThai()+"/";
+        }
+
+        return result;
     }
 
-    public void setNameProduct(String nameProduct) {
-        this.nameProduct = nameProduct;
+    public ArrayList<ItemOrder> getDsOrder() {
+        return dsOrder;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public void setDsOrder(ArrayList<ItemOrder> dsOrder) {
+        this.dsOrder = dsOrder;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+
+    public int getIdBan() {
+        return idBan;
     }
 
-    public float getPrice() {
-        return price;
+    public void setIdBan(int idBan) {
+        this.idBan = idBan;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    @Override
+    public String toString() {
+        return getStringDSMon();
     }
 }

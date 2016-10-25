@@ -9,10 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.administrator.qlcafe.database.MyDatabase;
+
 
 public class MainActivity extends Activity {
     EditText edtUsername,edtPassword;
     Button btnLogin;
+    MyDatabase database;
+    final int n = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +24,11 @@ public class MainActivity extends Activity {
 
         getControls();
         addListener();
+    }
+    private void init(){
+        database = new MyDatabase(this);
+        database.getDatabase();
+        database.initTable(n);
     }
 
     private void addListener() {
@@ -31,6 +40,7 @@ public class MainActivity extends Activity {
                 //then start list table activity
                 Intent intent = new Intent(MainActivity.this,ListTableActivity.class);
                 startActivity(intent);
+                init();
             }
         });
     }

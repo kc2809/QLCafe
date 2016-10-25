@@ -29,30 +29,6 @@
             android:layout_margin="5dp"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/preparing"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preparing"
-            android:layout_gravity="center"
-            android:textSize="12dp"/>
-        <ImageView
-            android:layout_margin="5dp"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/prepared"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Prepared"
-            android:layout_gravity="center"
-            android:textSize="12dp"/>
-        <ImageView
-            android:layout_margin="5dp"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
             android:src="@drawable/served"
             />
         <TextView
@@ -125,7 +101,7 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:text="Clear All Order"
         android:id="@+id/btnClearOrder"
         android:layout_alignParentBottom="true"
@@ -138,7 +114,7 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:text="Confirm"
         android:id="@+id/btnConfirm"
         android:layout_above="@+id/btnClearOrder"
@@ -149,6 +125,5 @@
 
         android:background="#ff009f9f"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="0dp"
         android:textSize="15dp" />
 </RelativeLayout>

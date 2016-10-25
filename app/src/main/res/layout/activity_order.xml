@@ -17,7 +17,7 @@
             android:textSize="25dp"
             android:layout_gravity="left|center"
             android:textColor="#ffffff"
-            android:id="@+id/textView8" />
+            android:id="@+id/tvTitle" />
     </LinearLayout>
 
     <TabHost

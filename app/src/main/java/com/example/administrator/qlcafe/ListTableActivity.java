@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.administrator.qlcafe.adapter.TableAdapter;
+import com.example.administrator.qlcafe.model.Food;
 import com.example.administrator.qlcafe.model.Table;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class ListTableActivity extends ActionBarActivity {
 
     ImageView imgLogout,imgRefresh;
 
+    public static ArrayList<Food> menuFood;
+
+    final int n=10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +37,30 @@ public class ListTableActivity extends ActionBarActivity {
         //example
         setData();
 
+        initData();
+
         getControls();
         addListener();
     }
 
+    private void initData(){
+        menuFood = new ArrayList<>();
+        String url = "http://image.flaticon.com/teams/1-freepik.jpg";
+        menuFood.add(new Food(11,"cafe",15000,url));
+        menuFood.add(new Food(22,"ca phao",15000,url));
+        menuFood.add(new Food(33,"cachua baba",20000,url));
+        menuFood.add(new Food(44,"foodball",20000,url));
+        menuFood.add(new Food(55,"fo mai",20000,url));
+        menuFood.add(new Food(66, "pho bo", 20000, url));
+        menuFood.add(new Food(77, "one", 20000, url));
+    }
+
+
+
     private void setData() {
         arrTable = new ArrayList<>();
 
-        for(int i=0;i<8;i++){
+        for(int i=0;i<n;i++){
             Table item = new Table(i,0);
             arrTable.add(item);
         }
@@ -55,8 +75,11 @@ public class ListTableActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
-                startActivity(new Intent(ListTableActivity.this,OrderActivity.class));
-                finish();
+                Intent intent = new Intent(ListTableActivity.this,OrderActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("IDBAN", (i + 1));
+                intent.putExtra("DATA", b);
+                startActivity(intent);
             }
         });
 

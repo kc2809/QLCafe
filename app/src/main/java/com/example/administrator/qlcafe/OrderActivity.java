@@ -1,6 +1,7 @@
 package com.example.administrator.qlcafe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,14 +23,20 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
 
     ViewPager viewPager;
     TabHost tabHost;
+    TextView title;
 
     MyFragmentPageAdapter myFragmentPageAdapter;
+    int idBan;
+
+    public static boolean isChanged = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
         addControls();
+
+        getData();
 
         initViewPage();
         initTabs();
@@ -38,7 +45,18 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
 
     }
 
+    public int getIdBan(){
+        return idBan;
+    }
+
+    private void getData(){
+        Intent intent =getIntent();
+        Bundle b= intent.getBundleExtra("DATA");
+        idBan = (int)b.getInt("IDBAN");
+        title.setText("Table "+idBan +" -> Order");
+    }
     private void initViewPage() {
+
         viewPager = (ViewPager)findViewById(R.id.view);
         ArrayList<Fragment> listFragments = new ArrayList<>();
         listFragments.add(new MyOrderFragment());
@@ -64,6 +82,7 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
             tabHost.addTab(tabSpec);
         }
         tabHost.setOnTabChangedListener(this);
+        tabHost.setCurrentTab(1);
         tabHost.getTabWidget().setBackgroundColor(Color.parseColor("#FFFFFF"));
         setTabColor(tabHost);
 
@@ -82,7 +101,7 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
 
 
     private void addControls() {
-
+        title = (TextView)findViewById(R.id.tvTitle);
     }
 
     private void addListener() {
@@ -109,6 +128,11 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
         int selectedItem = tabHost.getCurrentTab();
         viewPager.setCurrentItem(selectedItem);
         setTabColor(tabHost);
+
+        if(isChanged){
+            refresh();
+            isChanged = false;
+        }
     }
 
     public class FakeContent implements  TabHost.TabContentFactory{
@@ -125,5 +149,10 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
             fakeView.setMinimumWidth(0);
             return fakeView;
         }
+    }
+
+    public void refresh(){
+        myFragmentPageAdapter.replace(new MyOrderFragment(),0);
+        myFragmentPageAdapter.notifyDataSetChanged();
     }
 }
