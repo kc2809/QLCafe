@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="fitXY"
+        android:id="@+id/iconFood" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvNameProduct"
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/iconFood"
+        android:layout_toEndOf="@+id/iconFood"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvPrice"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:layout_below="@+id/tvNameProduct"
+        android:layout_toRightOf="@+id/iconFood"
+        android:layout_toEndOf="@+id/iconFood"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp" />
+</RelativeLayout>
