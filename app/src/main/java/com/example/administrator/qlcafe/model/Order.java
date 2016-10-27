@@ -21,7 +21,7 @@ public class Order {
         }
 
         //gop trang thai
-        if(dsOrder.size()>2){
+        if(dsOrder.size()>=2){
             System.out.println("I'M HERERERE " +toString());
             int i =0;
             while(i<dsOrder.size()-1){

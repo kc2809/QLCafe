@@ -24,7 +24,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:textSize="30dp"
-        android:textColorHint="#ffd0d0d0" />
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff" />
 
     <EditText
         android:layout_width="match_parent"
@@ -34,11 +35,12 @@
         android:layout_marginRight="20dp"
         android:background="@null"
         android:hint="Password"
+        android:textColor="#ffffff"
         android:paddingLeft="10dp"
         android:layout_alignLeft="@+id/edtUsername"
         android:layout_alignStart="@+id/edtUsername"
         android:textSize="30dp"
-        android:textColorHint="#ffd0d0d0" />
+        android:textColorHint="#ffffff" />
 
     <TextView
         android:layout_width="match_parent"
