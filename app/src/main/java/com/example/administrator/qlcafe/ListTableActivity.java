@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -18,8 +16,6 @@ import com.example.administrator.qlcafe.database.MyDatabase;
 import com.example.administrator.qlcafe.model.Food;
 import com.example.administrator.qlcafe.model.Table;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,6 +42,7 @@ public class ListTableActivity extends ActionBarActivity {
     ArrayList<Table> arrTable ;
     TableAdapter adapter;
 
+    //------------------
     ImageView imgLogout,imgRefresh;
 
     public static ArrayList<Food> menuFood;
@@ -54,27 +51,45 @@ public class ListTableActivity extends ActionBarActivity {
 
 
 //    public String  url_table_status = "http://desktop-t6c29d8:8080/ManagerCoffee/rest/serverTable/list";
-    public String  url_table_status = "http://192.168.137.1:8080/ManagerCoffee/rest/serverTable/list";
+//    public String  url_table_status = "http://192.168.137.1:8080/ManagerCoffee/rest/serverTable/list";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_table);
 
 
-
-
         init();
+
+        //example data food
         initData();
 
         getControls();
-        addListener();
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new docJSOn().execute(url_table_status);
-            }
-        });
+
+        addListener();
+        setDataFromDatabase();
+
+
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                new docJSOn().execute(url_table_status);
+//            }
+//        });
+
+    }
+
+    private void exampleData(){
+        arrTable = new ArrayList<>();
+        arrTable.add(new Table(1,"ban 1",0));
+        arrTable.add(new Table(5,"ban 5",0));
+        arrTable.add(new Table(3,"ban 3",1));
+        arrTable.add(new Table(8,"ban 8",0));
+        arrTable.add(new Table(45,"ban 45",0));
+        arrTable.add(new Table(9,"ban 9",1));
+        arrTable.add(new Table(7,"ban 7",0));
+        arrTable.add(new Table(10,"ban 10",1));
+        arrTable.add(new Table(6,"ban 6",0));
 
     }
 
@@ -82,6 +97,8 @@ public class ListTableActivity extends ActionBarActivity {
         database = new MyDatabase(this);
         database.getDatabase();
 
+        exampleData();
+        database.initTable(arrTable);
 
     }
     private void initData(){
@@ -100,7 +117,8 @@ public class ListTableActivity extends ActionBarActivity {
 
 
     private void setDataFromDatabase(){
-        arrTable = database.loadDataStatus_tbl();
+        arrTable.clear();
+        arrTable = database.loadTableDataFromTable_tbl();
         adapter = new TableAdapter(this,R.layout.item_table_layout,arrTable);
         adapter.notifyDataSetChanged();
         girdView.setAdapter(adapter);
@@ -108,7 +126,7 @@ public class ListTableActivity extends ActionBarActivity {
 
 
     private void addListener() {
-//        adapter = new TableAdapter(this,R.layout.item_table_layout,arrTable);
+        adapter = new TableAdapter(this,R.layout.item_table_layout,arrTable);
 
 
         girdView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -117,7 +135,7 @@ public class ListTableActivity extends ActionBarActivity {
                 Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ListTableActivity.this,OrderActivity.class);
                 Bundle b = new Bundle();
-                b.putInt("IDBAN", arrTable.get(i).getId());
+                b.putSerializable("BAN", arrTable.get(i));
                 intent.putExtra("DATA", b);
                 startActivity(intent);
             }
@@ -204,36 +222,6 @@ public class ListTableActivity extends ActionBarActivity {
         }
     }
 
-    public ArrayList<Table> xulyJson(String s1){
-      String s = "[{\"id_coffee_shop\":\"1\",\"id_table\":\"1\",\"name_table\":\"ban9\",\"status\":\"0\"},{\"id_coffee_shop\":\"1\",\"id_table\":\"3\",\"name_table\":\"ban3\",\"status\":\"1\"}]";
-
-
-        ArrayList<Table> myArr = new ArrayList<>();
-
-        try{
-            System.out.println("HERE1 " );
-            JSONArray jsonArray = new JSONArray(s);
-
-        //    JSONArray
-            System.out.println("HERE" );
-            for(int i=0;i<jsonArray.length();++i){
-       //         JSONObject object = (JSONObject) jsonArray.get(i);
-          //      Table item = new Table(object.getInt("id_table"),object.getString("name_table"),object.getInt("status"));
-        //        System.out.println("item : " + item.toString());
-        //        myArr.add(item);
-            }
-
-            database.initStatusTable(myArr);
-            database.initTable(myArr);
-
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return myArr;
-    }
-    
     // read xml parse doom
     public Document getDomElement(String xml){
         Document doc = null;
@@ -283,7 +271,7 @@ public class ListTableActivity extends ActionBarActivity {
                 tables.add(item);
             }
         }
-        database.initStatusTable(tables);
+ //       database.initStatusTable(tables);
 
         return tables;
     }

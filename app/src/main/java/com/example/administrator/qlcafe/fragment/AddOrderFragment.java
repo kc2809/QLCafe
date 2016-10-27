@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.administrator.qlcafe.Constant;
 import com.example.administrator.qlcafe.ListTableActivity;
@@ -21,6 +20,7 @@ import com.example.administrator.qlcafe.OrderActivity;
 import com.example.administrator.qlcafe.R;
 import com.example.administrator.qlcafe.adapter.ProductValueAdapter;
 import com.example.administrator.qlcafe.model.Food;
+import com.example.administrator.qlcafe.model.Table;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class AddOrderFragment extends Fragment implements Constant {
                 Bundle b = new Bundle();
                 b.putSerializable("FOOD", foodSelected);
                 b.putInt("QUANTITY", 0);
-                b.putInt("IDBAN", getIDBan());
+                b.putSerializable("BAN", getBanSelected());
                 b.putInt("REQUEST", OPEN_MODIFY_ACTIVITY_FOR_ADD);
                 in.putExtra("DATA", b);
                 startActivityForResult(in, OPEN_MODIFY_ACTIVITY_FOR_ADD);
@@ -97,13 +97,11 @@ public class AddOrderFragment extends Fragment implements Constant {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == MODIFY_SUCCESS){
-            Toast.makeText(getActivity(),"Them thanh cong",Toast.LENGTH_LONG).show();
-        }
+
     }
 
-    private int getIDBan() {
+    private Table getBanSelected(){
         OrderActivity activity = (OrderActivity)getActivity();
-       return  activity.getIdBan();
+        return activity.getBanSelected();
     }
 }

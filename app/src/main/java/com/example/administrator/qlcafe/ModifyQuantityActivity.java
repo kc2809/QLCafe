@@ -6,10 +6,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.qlcafe.database.MyDatabase;
 import com.example.administrator.qlcafe.model.Food;
 import com.example.administrator.qlcafe.model.ItemOrder;
+import com.example.administrator.qlcafe.model.Table;
 
 
 public class ModifyQuantityActivity extends ActionBarActivity implements Constant{
@@ -18,7 +20,8 @@ public class ModifyQuantityActivity extends ActionBarActivity implements Constan
     int num;
     int request;
     Food item;
-    int idBan;
+
+    Table banSelected;
     ItemOrder itemOrder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +41,18 @@ public class ModifyQuantityActivity extends ActionBarActivity implements Constan
                 Intent in = getIntent();
                 Bundle b = new Bundle();
                 if(request == OPEN_MODIFY_ACTIVITY_FOR_ADD){
-                    System.out.println("IDBAN = " + idBan + " NUM = " + num);
-                    b.putInt("QUANTITY",num);
-                    in.putExtra("DATA", b);
 
-                    MyDatabase database  = new MyDatabase(ModifyQuantityActivity.this);
-                    database.getDatabase();
-                    database.insertOrder(idBan,item.getId_food(),num);
-                    OrderActivity.isChanged = true;
+
+                    if(num!=0){
+                        //add to database if quantity over 0
+                        MyDatabase database  = new MyDatabase(ModifyQuantityActivity.this);
+                        database.getDatabase();
+                        database.insertOrder(banSelected.getId(),item.getId_food(),num);
+                        //---------------
+                        Toast.makeText(getApplicationContext(), "Them thanh cong", Toast.LENGTH_LONG).show();
+                        OrderActivity.isChanged = true;
+                    }
+
                     setResult(MODIFY_SUCCESS, in);
                     finish();
                 }
@@ -84,7 +91,7 @@ public class ModifyQuantityActivity extends ActionBarActivity implements Constan
         if(request == OPEN_MODIFY_ACTIVITY_FOR_ADD){
             num = (int)b.getInt("QUANTITY");
             item = (Food)b.getSerializable("FOOD");
-            idBan = (int)b.getInt("IDBAN");
+            banSelected = (Table)b.getSerializable("BAN");
             tvNum.setText(num + "");
          }
 

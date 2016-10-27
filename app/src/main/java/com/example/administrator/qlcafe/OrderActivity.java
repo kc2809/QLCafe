@@ -15,6 +15,7 @@ import com.example.administrator.qlcafe.fragment.AddOrderFragment;
 import com.example.administrator.qlcafe.fragment.MyFragmentPageAdapter;
 import com.example.administrator.qlcafe.fragment.MyOrderFragment;
 import com.example.administrator.qlcafe.fragment.PaymentFragment;
+import com.example.administrator.qlcafe.model.Table;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
     TextView title;
 
     MyFragmentPageAdapter myFragmentPageAdapter;
-    int idBan;
+    Table banSelected;
 
     public static boolean isChanged = false;
     @Override
@@ -45,16 +46,16 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
 
     }
 
-    public int getIdBan(){
-        return idBan;
+    public Table getBanSelected(){
+        return banSelected;
     }
 
     private void getData(){
         Intent intent =getIntent();
         Bundle b= intent.getBundleExtra("DATA");
-        idBan = (int)b.getInt("IDBAN");
-        System.out.println("CON ME NO IDBAN "+idBan);
-        title.setText("Table "+idBan +" -> Order");
+        banSelected = (Table)b.getSerializable("BAN");
+
+        title.setText(banSelected.getLabel() +" -> Order");
     }
     private void initViewPage() {
 

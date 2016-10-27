@@ -21,6 +21,7 @@ import com.example.administrator.qlcafe.adapter.OrderItemAdapter;
 import com.example.administrator.qlcafe.database.MyDatabase;
 import com.example.administrator.qlcafe.model.ItemOrder;
 import com.example.administrator.qlcafe.model.Order;
+import com.example.administrator.qlcafe.model.Table;
 
 /**
  * Created by Administrator on 10/19/2016.
@@ -32,7 +33,8 @@ public class MyOrderFragment extends Fragment implements Constant {
  //   ArrayList<ItemOrder> arrOder;
     OrderItemAdapter adapter;
     Order order;
-    int idBan;
+    Table banSelected;
+
     MyDatabase database;
 
     ItemOrder selectedItem;
@@ -100,14 +102,14 @@ public class MyOrderFragment extends Fragment implements Constant {
     }
     private void addData() {
         OrderActivity activity = (OrderActivity)getActivity();
-        idBan = activity.getIdBan();
+        banSelected = activity.getBanSelected();
         refresh();
     }
 
     private void refresh(){
 
-        order = database.loadDataTable_tblById(idBan);
-        System.out.println("Tao refresh day "+ order.toString());
+        order = database.loadOrderDataFromTable_tblById(banSelected.getId());
+    //    System.out.println("Tao refresh day "+ order.toString());
         adapter = new OrderItemAdapter(getActivity(),R.layout.item_order_layout,order.getDsOrder());
         lvDetail.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -117,7 +119,7 @@ public class MyOrderFragment extends Fragment implements Constant {
         btnCofirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.comfirmOrder(getIDBan());
+                database.comfirmOrder(getBanSelected().getId());
                 refresh();
             }
         });
@@ -130,9 +132,9 @@ public class MyOrderFragment extends Fragment implements Constant {
         });
     }
 
-    private int getIDBan() {
+    private Table getBanSelected() {
         OrderActivity activity = (OrderActivity)getActivity();
-        return  activity.getIdBan();
+        return  activity.getBanSelected();
     }
 
     @Override
@@ -143,7 +145,7 @@ public class MyOrderFragment extends Fragment implements Constant {
             int num = (int)b.getInt("QUANTITY");
 
             order.getDsOrder().get(position).setSoLuong(num);
-            database.updateTableById(getIDBan(),order);
+           database.updateTableByOrder(order);
             refresh();
         }
     }

@@ -6,13 +6,22 @@ import java.util.ArrayList;
  * Created by Administrator on 10/20/2016.
  */
 public class Order {
-    int idBan;
+    Table table;
 
 
     ArrayList<ItemOrder> dsOrder= new ArrayList<>();
 
 
     public Order() {
+        dsOrder= new ArrayList<>();
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public void comfirmOrder(){
@@ -22,7 +31,6 @@ public class Order {
 
         //gop trang thai
         if(dsOrder.size()>=2){
-            System.out.println("I'M HERERERE " +toString());
             int i =0;
             while(i<dsOrder.size()-1){
                 for(int j=i+1;j<dsOrder.size();++j){
@@ -34,7 +42,6 @@ public class Order {
                 }
                 i++;
             }
-            System.out.println("@@@@@@@SO LUONG"+ dsOrder.size());
         }
 
     }
@@ -77,9 +84,15 @@ public class Order {
         }
     }
 
-    public Order(int idBan,String dsMon,String dsSL,String dsTT){
-        this.idBan = idBan;
-       setDsOrderByString(dsMon,dsSL,dsTT);
+//    public Order(int idBan,String dsMon,String dsSL,String dsTT){
+//        this.idBan = idBan;
+//       setDsOrderByString(dsMon,dsSL,dsTT);
+//    }
+
+    //get data from database
+    public Order(int id,String name,int status,String dsMon,String dsSL,String dsTT){
+        this.table = new Table(id,name,status);
+        setDsOrderByString(dsMon,dsSL,dsTT);
     }
 
     public void setDsOrderByString(String dsMon,String dsSoLuong,String dsTT){
@@ -129,16 +142,10 @@ public class Order {
     }
 
 
-    public int getIdBan() {
-        return idBan;
-    }
 
-    public void setIdBan(int idBan) {
-        this.idBan = idBan;
-    }
 
     @Override
     public String toString() {
-        return "IDBAN : "+ idBan + "-"+getStringDSMon();
+        return "IDBAN : "+ table.getId() + "-";
     }
 }

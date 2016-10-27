@@ -1,20 +1,16 @@
 package com.example.administrator.qlcafe.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 10/18/2016.
  */
-public class Table {
+public class Table implements Serializable{
     int id;
     String label;
     int status;
 
     public Table() {
-    }
-
-    public Table(int id, int status) {
-        this.id = id;
-        this.status = status;
-        label = "Table " + id;
     }
 
     public Table(int id, String label, int status) {
