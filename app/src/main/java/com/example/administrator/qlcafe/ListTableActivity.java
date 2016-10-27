@@ -43,7 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ListTableActivity extends ActionBarActivity {
 
     GridView girdView;
-    ArrayList<Table> arrTable;
+    ArrayList<Table> arrTable ;
     TableAdapter adapter;
 
     ImageView imgLogout,imgRefresh;
@@ -53,7 +53,8 @@ public class ListTableActivity extends ActionBarActivity {
     MyDatabase database;
 
 
-    public String  url_table_status = "http://desktop-t6c29d8:8080/ManagerCoffee/rest/serverTable/list";
+//    public String  url_table_status = "http://desktop-t6c29d8:8080/ManagerCoffee/rest/serverTable/list";
+    public String  url_table_status = "http://192.168.137.1:8080/ManagerCoffee/rest/serverTable/list";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +117,7 @@ public class ListTableActivity extends ActionBarActivity {
                 Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ListTableActivity.this,OrderActivity.class);
                 Bundle b = new Bundle();
-                b.putInt("IDBAN", (i + 1));
+                b.putInt("IDBAN", arrTable.get(i).getId());
                 intent.putExtra("DATA", b);
                 startActivity(intent);
             }
@@ -196,7 +197,9 @@ public class ListTableActivity extends ActionBarActivity {
         protected void onPostExecute(String s){
             Toast.makeText(ListTableActivity.this,s,Toast.LENGTH_LONG).show();
             System.out.println("----k@@@ : "+ s);
-            xulyJson(url_table_status);
+            Document doc = getDomElement(s);
+            xmlParse(doc);
+        //    xulyJson(url_table_status);
             setDataFromDatabase();
         }
     }
@@ -221,6 +224,7 @@ public class ListTableActivity extends ActionBarActivity {
             }
 
             database.initStatusTable(myArr);
+            database.initTable(myArr);
 
         }
         catch(Exception e){
@@ -229,7 +233,7 @@ public class ListTableActivity extends ActionBarActivity {
 
         return myArr;
     }
-
+    
     // read xml parse doom
     public Document getDomElement(String xml){
         Document doc = null;
@@ -256,22 +260,31 @@ public class ListTableActivity extends ActionBarActivity {
         return doc;
     }
 
-    public String getValue(Element item, String str) {
-        NodeList n = item.getElementsByTagName(str);
-        return this.getElementValue(n.item(0));
-    }
+    public ArrayList<Table> xmlParse(Document doc){
+        System.out.println("@@@@PARSE");
+        ArrayList<Table> tables = new ArrayList<>();
+        Element root = doc.getDocumentElement();
+        NodeList list = root.getChildNodes();
 
-    public final String getElementValue( Node elem ) {
-        Node child;
-        if( elem != null){
-            if (elem.hasChildNodes()){
-                for( child = elem.getFirstChild(); child != null; child = child.getNextSibling() ){
-                    if( child.getNodeType() == Node.TEXT_NODE  ){
-                        return child.getNodeValue();
-                    }
-                }
+        System.out.println("LENGTH = "+list.getLength());
+        for(int i=0;i<list.getLength();++i){
+            Node node = list.item(i);
+            if(node instanceof  Element){
+                Element table = (Element) node;
+                NodeList listChild = table.getElementsByTagName("id_table");
+                int id_Table = Integer.parseInt(listChild.item(0).getTextContent());
+                listChild = table.getElementsByTagName("name_table");
+                String name_Table = listChild.item(0).getTextContent();
+                listChild = table.getElementsByTagName("status");
+                int status_Table = Integer.parseInt(listChild.item(0).getTextContent());
+
+                System.out.println(id_Table + " - " + name_Table + " - " + status_Table);
+                Table item = new Table(id_Table,name_Table,status_Table);
+                tables.add(item);
             }
         }
-        return "";
+        database.initStatusTable(tables);
+
+        return tables;
     }
 }

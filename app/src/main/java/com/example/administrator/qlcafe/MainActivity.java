@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends Activity {
@@ -32,6 +34,8 @@ public class MainActivity extends Activity {
 
         getControls();
         addListener();
+
+
     }
 
 
@@ -54,4 +58,7 @@ public class MainActivity extends Activity {
         edtPassword = (EditText)findViewById(R.id.edtPassword);
         btnLogin = (Button)findViewById(R.id.btnLogin);
     }
+
+
+
 }

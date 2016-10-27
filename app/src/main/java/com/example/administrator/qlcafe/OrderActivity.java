@@ -53,6 +53,7 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
         Intent intent =getIntent();
         Bundle b= intent.getBundleExtra("DATA");
         idBan = (int)b.getInt("IDBAN");
+        System.out.println("CON ME NO IDBAN "+idBan);
         title.setText("Table "+idBan +" -> Order");
     }
     private void initViewPage() {

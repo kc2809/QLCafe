@@ -38,6 +38,7 @@ public class ModifyQuantityActivity extends ActionBarActivity implements Constan
                 Intent in = getIntent();
                 Bundle b = new Bundle();
                 if(request == OPEN_MODIFY_ACTIVITY_FOR_ADD){
+                    System.out.println("IDBAN = " + idBan + " NUM = " + num);
                     b.putInt("QUANTITY",num);
                     in.putExtra("DATA", b);
 

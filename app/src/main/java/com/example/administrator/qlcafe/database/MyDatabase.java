@@ -64,10 +64,12 @@ public class MyDatabase {
     public void createTableStatus(){
         String sql = "CREATE TABLE [status_tbl] (\n" +
                 "[Id] INTEGER  NOT NULL PRIMARY KEY ,\n" +
-                "[status] INTEGER  NULL\n" +
+                "[name] TEXT  NULL,\n" +
+                "[status] INTEGER NOT NULL\n" +
                 ")";
 
         database.execSQL(sql);
+        System.out.println("CREATE STATUS THANH CONG");
     }
 
 
@@ -76,11 +78,16 @@ public class MyDatabase {
     */
 
     public boolean insertOrder(int idBan,int idMon,int soLuong){
-        System.out.println("IDBAN " + idBan);
-        Order order = loadDataTable_tblById(idBan);
-        order.checkValidateOrder(idMon, soLuong);
 
+        Order order = loadDataTable_tblById(idBan);
+        System.out.println(order.toString());
+        order.checkValidateOrder(idMon, soLuong);
         updateTableById(idBan, order);
+        System.out.println(order.toString());
+
+
+
+
         return true;
     }
 
@@ -112,15 +119,17 @@ public class MyDatabase {
             //ERROR
             return false;
         }
+        System.out.println("INSERT THANH CONG");
         //SUCCESS
         return true;
      }
 
 
-    public boolean insertStatus_tbl(int id,int value ){
+    public boolean insertStatus_tbl(Table table ){
         ContentValues content = new ContentValues();
-        content.put("Id",id);
-        content.put("status",value);
+        content.put("Id",table.getId());
+        content.put("name",table.getLabel());
+        content.put("status",table.getStatus());
 
         if(database.insert("status_tbl",null,content)==-1){
             //ERROR
@@ -140,11 +149,18 @@ public class MyDatabase {
         }
     }
 
+    public void initTable(ArrayList<Table> tables){
+        deleteAllTable_tbl();
+        String s="";
+        for(int i=1;i<=tables.size();++i){
+            insertTable_tbl(tables.get(i).getId(),s,s,s);
+        }
+    }
 
     public void initStatusTable(ArrayList<Table> arrayTable ){
         deleteAllStatus_tbl();
         for(int i=0;i<arrayTable.size();++i){
-            insertStatus_tbl(arrayTable.get(i).getId(),arrayTable.get(i).getStatus());
+            insertStatus_tbl(arrayTable.get(i));
         }
     }
 
@@ -190,6 +206,7 @@ public class MyDatabase {
                 item.setDsOrderByString(cursor.getString(1), cursor.getString(2), cursor.getString(3));
             }
         }
+        System.out.println("afdasdlfjsadlf: "+ item.toString());
         cursor.close();
         return item;
     }
@@ -204,7 +221,7 @@ public class MyDatabase {
         if(count!=0){
             cursor.moveToFirst();
             while(!cursor.isAfterLast()){
-                Table item = new Table(cursor.getInt(1),cursor.getInt(2));
+                Table item = new Table(cursor.getInt(0),cursor.getString(1),cursor.getInt(2));
                 arr.add(item);
                 cursor.moveToNext();
             }
