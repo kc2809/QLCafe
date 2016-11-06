@@ -25,6 +25,10 @@ public class Order {
     }
 
     public void comfirmOrder(){
+        //send order that has status is 0
+        // sendOrder(dsOrder.get(i))
+
+        //
         for(int i =0;i<dsOrder.size();i++){
             dsOrder.get(i).setTrangThai(1);
         }

@@ -35,6 +35,8 @@
             android:name=".ListProductActivity"
             android:label="@string/title_activity_list_product" >
         </activity>
+
+        <service android:name=".process.data.RefreshService"/>
     </application>
 
 </manifest>

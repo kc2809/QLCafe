@@ -127,9 +127,12 @@ public class MyDatabase {
         }
     }
 
+
+
     /*---------------LOAD DATA-----------------
   *------------------------------------------
  */
+
     public ArrayList<Order> loadOrderDataFromTable_tbl(){
         ArrayList<Order> arr = new ArrayList<>();
         Cursor cursor;
@@ -203,6 +206,27 @@ public class MyDatabase {
         return item;
     }
 
+    //--------------------------------------------------------
+    public boolean updateStatusTable(Table table){
+        ContentValues values = new ContentValues();
+        values.put("id", table.getId());
+        values.put("status", table.getStatus());
+
+        int ret = database.update("table_tbl", values, "id=" + table.getId(), null);
+        if(ret ==0 ){
+            //failed
+            return false;
+        }
+        return true;
+    }
+
+    public void updateAllStatusTable(ArrayList<Table> arr){
+        for(int i=0;i<arr.size();++i){
+            updateStatusTable(arr.get(i));
+        }
+    }
+
+    //--------------------------------------------------------
 
     //---------------------------------------------------------------------
     public boolean freeTableById(int id){

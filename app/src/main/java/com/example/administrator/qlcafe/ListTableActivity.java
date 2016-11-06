@@ -1,10 +1,12 @@
 package com.example.administrator.qlcafe;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -15,28 +17,15 @@ import com.example.administrator.qlcafe.adapter.TableAdapter;
 import com.example.administrator.qlcafe.database.MyDatabase;
 import com.example.administrator.qlcafe.model.Food;
 import com.example.administrator.qlcafe.model.Table;
+import com.example.administrator.qlcafe.process.data.ProcessData;
+import com.example.administrator.qlcafe.process.data.RefreshService;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-
-public class ListTableActivity extends ActionBarActivity {
+public class ListTableActivity extends ActionBarActivity implements Constant {
 
     GridView girdView;
     ArrayList<Table> arrTable ;
@@ -49,9 +38,8 @@ public class ListTableActivity extends ActionBarActivity {
 
     MyDatabase database;
 
+    BroadcastReceiver receiver;
 
-//    public String  url_table_status = "http://desktop-t6c29d8:8080/ManagerCoffee/rest/serverTable/list";
-//    public String  url_table_status = "http://192.168.137.1:8080/ManagerCoffee/rest/serverTable/list";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,21 +55,22 @@ public class ListTableActivity extends ActionBarActivity {
 
 
         addListener();
-        setDataFromDatabase();
+ //       setDataFromDatabase();
 
 
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                new docJSOn().execute(url_table_status);
-//            }
-//        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new docJSOn().execute(url_table_list);
+            }
+        });
+        receiverFromService();
 
     }
 
     private void exampleData(){
         arrTable = new ArrayList<>();
-        arrTable.add(new Table(1,"ban 1",0));
+        arrTable.add(new Table(1, "ban 1", 0));
         arrTable.add(new Table(5,"ban 5",0));
         arrTable.add(new Table(3,"ban 3",1));
         arrTable.add(new Table(8,"ban 8",0));
@@ -96,21 +85,24 @@ public class ListTableActivity extends ActionBarActivity {
     private void init(){
         database = new MyDatabase(this);
         database.getDatabase();
-
-        exampleData();
-        database.initTable(arrTable);
+        arrTable = new ArrayList<>();
+    //    exampleData();
+     //   database.initTable(arrTable);
 
     }
     private void initData(){
+        // load menu list in here
+
         menuFood = new ArrayList<>();
         String url = "http://image.flaticon.com/teams/1-freepik.jpg";
         menuFood.add(new Food(11,"cafe",15000,url));
         menuFood.add(new Food(22,"ca phao",15000,url));
-        menuFood.add(new Food(33,"cachua baba",20000,url));
+        menuFood.add(new Food(33, "cachua baba", 20000, url));
         menuFood.add(new Food(44,"foodball",20000,url));
-        menuFood.add(new Food(55,"fo mai",20000,url));
+        menuFood.add(new Food(55, "fo mai", 20000, url));
         menuFood.add(new Food(66, "pho bo", 20000, url));
         menuFood.add(new Food(77, "one", 20000, url));
+
     }
 
 
@@ -164,6 +156,7 @@ public class ListTableActivity extends ActionBarActivity {
 
     private void refresh() {
         Toast.makeText(ListTableActivity.this,"Refresh",Toast.LENGTH_LONG).show();
+        (new docXMLUpdate()).execute(Constant.url_table_list);
     }
 
     private void getControls() {
@@ -173,106 +166,69 @@ public class ListTableActivity extends ActionBarActivity {
     }
 
 
-    //------ doc json tu hue
-    private static String docNoiDung_Tu_URL(String theUrl)
-    {
-        StringBuilder content = new StringBuilder();
-
-        try
-        {
-            // create a url object
-            URL url = new URL(theUrl);
-
-            // create a urlconnection object
-            URLConnection urlConnection = url.openConnection();
-
-            // wrap the urlconnection in a bufferedreader
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-            String line;
-
-            // read from the urlconnection via the bufferedreader
-            while ((line = bufferedReader.readLine()) != null)
-            {
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return content.toString();
-    }
-
-    //---------
-    class docJSOn extends AsyncTask<String,Integer,String> {
+    //------------------------------ doc XML tu hue
+    //--------- khoi tao
+      class docJSOn extends AsyncTask<String,Integer,String> {
         protected String doInBackground(String... params){
-            return docNoiDung_Tu_URL(params[0]);
-
+            return  ProcessData.getInstance().docNoiDung_Tu_URL(params[0]);
         }
 
         protected void onPostExecute(String s){
-            Toast.makeText(ListTableActivity.this,s,Toast.LENGTH_LONG).show();
             System.out.println("----k@@@ : "+ s);
-            Document doc = getDomElement(s);
-            xmlParse(doc);
-        //    xulyJson(url_table_status);
+            Document doc =  ProcessData.getInstance().getDomElement(s);
+            ArrayList<Table> arr =  ProcessData.getInstance().xmlParse(doc);
+            database.initTable(arr);
             setDataFromDatabase();
         }
     }
 
-    // read xml parse doom
-    public Document getDomElement(String xml){
-        Document doc = null;
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try {
-
-            DocumentBuilder db = dbf.newDocumentBuilder();
-
-            InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(xml));
-            doc = db.parse(is);
-
-        } catch (ParserConfigurationException e) {
-            Log.e("Error: ", e.getMessage());
-            return null;
-        } catch (SAXException e) {
-            Log.e("Error: ", e.getMessage());
-            return null;
-        } catch (IOException e) {
-            Log.e("Error: ", e.getMessage());
-            return null;
+    //---- update
+    class docXMLUpdate extends AsyncTask<String,Integer,String> {
+        protected String doInBackground(String... params){
+            return  ProcessData.getInstance().docNoiDung_Tu_URL(params[0]);
         }
-        // return DOM
-        return doc;
+
+        protected void onPostExecute(String s){
+            System.out.println("----k@@@ : "+ s);
+            Document doc =  ProcessData.getInstance().getDomElement(s);
+            ArrayList<Table> arr =  ProcessData.getInstance().xmlParse(doc);
+            setDataFromDatabase();
+        }
     }
 
-    public ArrayList<Table> xmlParse(Document doc){
-        System.out.println("@@@@PARSE");
-        ArrayList<Table> tables = new ArrayList<>();
-        Element root = doc.getDocumentElement();
-        NodeList list = root.getChildNodes();
 
-        System.out.println("LENGTH = "+list.getLength());
-        for(int i=0;i<list.getLength();++i){
-            Node node = list.item(i);
-            if(node instanceof  Element){
-                Element table = (Element) node;
-                NodeList listChild = table.getElementsByTagName("id_table");
-                int id_Table = Integer.parseInt(listChild.item(0).getTextContent());
-                listChild = table.getElementsByTagName("name_table");
-                String name_Table = listChild.item(0).getTextContent();
-                listChild = table.getElementsByTagName("status");
-                int status_Table = Integer.parseInt(listChild.item(0).getTextContent());
+    //----------------------------------------
 
-                System.out.println(id_Table + " - " + name_Table + " - " + status_Table);
-                Table item = new Table(id_Table,name_Table,status_Table);
-                tables.add(item);
+    private void receiverFromService(){
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("update.ui");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //refresh ui
+                System.out.println("@@@@@@@ HAHAHAHAHA @@@@@@@");
+                setDataFromDatabase();
             }
-        }
- //       database.initStatusTable(tables);
+        };
+        registerReceiver(receiver,intentFilter);
+    }
 
-        return tables;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, RefreshService.class));
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, RefreshService.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this, RefreshService.class));
     }
 }
