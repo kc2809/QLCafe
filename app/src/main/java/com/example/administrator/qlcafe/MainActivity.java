@@ -17,6 +17,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.administrator.qlcafe.process.data.ProcessData;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,10 +76,45 @@ public class MainActivity extends Activity implements Constant{
         @Override
         protected Void doInBackground(String... params) {
 
-           String s =  ProcessData.getInstance().docNoiDung_Tu_URL("http://192.135.1.100:8080/ManagerCoffee/rest/serverApp/login?username=a2&password=1");
+           String s =  ProcessData.getInstance().docNoiDung_Tu_URL("http://192.135.1.100:8080/manage-coffee/rest/serverApp/login?username=kim&password=123");
 
             System.out.println("AAA: "+ s);
-            int a = ProcessData.getInstance().xmlParseLogin(ProcessData.getInstance().getDomElement(s));
+             ProcessData.getInstance().xmlParseLogin(ProcessData.getInstance().getDomElement(s));
+
+            //---------------
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.135.1.100:8080/manage-coffee/rest/serverOrder/Menu");
+
+            try {
+                StringEntity se = new StringEntity( "<orders>\n" +
+                        "     <order>\n" +
+                        "       \t<id_menu>1</id_menu>\n" +
+                        "        <count_menu>3</count_menu>\n" +
+                        "     </order>\n" +
+                        "     <orders>\n" +
+                        "        <id_menu>1</id_menu>\n" +
+                        "        <count_menu>3</count_menu>\n" +
+                        "     </orders>\n" +
+                        "    <idStaff>1</idStaff>\n" +
+                        "    <idTable>3</idTable>\n" +
+                        "    <key>07d90734dbc14ce783e0d118029b3394</key>\n" +
+                        "</orders>\n", HTTP.UTF_8);
+                se.setContentType("application/xml");
+                httppost.setEntity(se);
+
+                HttpResponse httpresponse = httpclient.execute(httppost);
+                HttpEntity resEntity = httpresponse.getEntity();
+                String responseXml = EntityUtils.toString(httpresponse.getEntity());
+           //     System.out.println("RESPONSE: " +EntityUtils.toString(resEntity));
+                System.out.println("RESPONSE: " +responseXml);
+            } catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //-------------------
 
             return null;
         }
@@ -101,4 +147,8 @@ public class MainActivity extends Activity implements Constant{
         };
         queue.add(request);
     }
+
+
+
+
 }

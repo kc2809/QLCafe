@@ -122,9 +122,9 @@ public class ProcessData {
         }
         return tables;
     }
-    //------------ read xml menu list
-    public int xmlParseLogin(Document doc){
-        int result = -1;
+    //------------ read xml login list
+    public String xmlParseLogin(Document doc){
+        String result =null;
 
         Element root = doc.getDocumentElement();
         System.out.println("ROOT : " +root.getNodeName());
@@ -135,7 +135,7 @@ public class ProcessData {
         System.out.println("re : " + e.getTextContent());
 
 
-        result = Integer.parseInt(e.getTextContent());
+        result = e.getTextContent();
 
         System.out.println("REUSLT : "+ result);
         return result;
