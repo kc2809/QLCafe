@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -36,7 +37,23 @@ public class MainActivity extends Activity implements Constant{
     EditText edtUsername,edtPassword;
     Button btnLogin;
 
+    public static String userName=null;
+    public static String key=null;
 
+    public static void setKey(String key2){
+        key = key2;
+    }
+    public static String getKey(){
+        return key;
+    }
+
+    public static void setUserName(String user){
+        userName = user;
+    }
+
+    public static String getUserName(){
+        return userName;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +63,7 @@ public class MainActivity extends Activity implements Constant{
         getControls();
         addListener();
 
-        (new PostTask()).execute(Constant.url_login, "a1", "1");
+   //     (new PostTask()).execute(Constant.url_login, "a1", "1");
     //    postData();
     }
 
@@ -56,13 +73,19 @@ public class MainActivity extends Activity implements Constant{
             @Override
             public void onClick(View view) {
                 //check valid account
-
-                //then start list table activity
-                Intent intent = new Intent(MainActivity.this,ListTableActivity.class);
-                startActivity(intent);
+                String username = edtUsername.getText().toString();
+                String password = edtPassword.getText().toString();
+                setUserName(username);
+                (new PostLoginTask()).execute(username, password);
 
             }
         });
+    }
+
+    private void startListTableActivity(){
+        //then start list table activity
+        Intent intent = new Intent(MainActivity.this,ListTableActivity.class);
+        startActivity(intent);
     }
 
     private void getControls() {
@@ -71,6 +94,40 @@ public class MainActivity extends Activity implements Constant{
         btnLogin = (Button)findViewById(R.id.btnLogin);
     }
 
+    private class PostLoginTask extends AsyncTask<String,Integer,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            System.out.println("USERNAME + PASS: "+ strings[0]+ "-" +strings[1]);
+            String request = "username=" + strings[0]+
+                    "&password=" + strings[1];
+            String url = Constant.url_login + request;
+
+            String s =  ProcessData.getInstance().docNoiDung_Tu_URL(url);
+
+            String result = ProcessData.getInstance().xmlParseLogin(ProcessData.getInstance().getDomElement(s));
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(s.equals("false")){
+                Toast.makeText(MainActivity.this,"Username or Password is wrong.\nTry Again",Toast.LENGTH_LONG).show();
+            }
+            else{
+                setKey(s);
+                Toast.makeText(MainActivity.this,"OK",Toast.LENGTH_LONG).show();
+                startListTableActivity();
+            }
+        }
+    }
+
+
+
+    //--------------------
     private class PostTask extends AsyncTask<String, Integer, Void> {
 
         @Override
@@ -121,34 +178,6 @@ public class MainActivity extends Activity implements Constant{
     }
 
     //-----------
-
-
-    public void postData(){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.POST, Constant.url_login, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                System.out.println("AAA: "+ response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parameters = new HashMap<String,String>();
-                parameters.put("username","a2");
-                parameters.put("password","1");
-
-                return parameters;
-            }
-        };
-        queue.add(request);
-    }
-
-
 
 
 }

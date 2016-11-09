@@ -1,5 +1,6 @@
 package com.example.administrator.qlcafe;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +26,7 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 
 
-public class ListTableActivity extends ActionBarActivity implements Constant {
+public class ListTableActivity extends Activity implements Constant {
 
     GridView girdView;
     ArrayList<Table> arrTable ;
@@ -45,7 +46,6 @@ public class ListTableActivity extends ActionBarActivity implements Constant {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_table);
 
-
         init();
 
         //example data food
@@ -61,7 +61,7 @@ public class ListTableActivity extends ActionBarActivity implements Constant {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new docJSOn().execute(url_table_list);
+                new docJSOn().execute(url_table_list+MainActivity.getKey());
             }
         });
         receiverFromService();
@@ -151,18 +151,47 @@ public class ListTableActivity extends ActionBarActivity implements Constant {
 
     private void logOut() {
         Toast.makeText(ListTableActivity.this,"LOG OUT",Toast.LENGTH_LONG).show();
-        finish();
+
+        (new LogoutTask()).execute(MainActivity.getUserName(),MainActivity.getKey());
+
     }
 
     private void refresh() {
         Toast.makeText(ListTableActivity.this,"Refresh",Toast.LENGTH_LONG).show();
-        (new docXMLUpdate()).execute(Constant.url_table_list);
+        (new docXMLUpdate()).execute(Constant.url_table_list+MainActivity.getKey());
     }
 
     private void getControls() {
         girdView = (GridView)findViewById(R.id.gvListTable);
         imgLogout = (ImageView)findViewById(R.id.imgLogOut);
         imgRefresh = (ImageView)findViewById(R.id.imgRefresh);
+    }
+
+
+    class LogoutTask extends AsyncTask<String,Void, Void>{
+
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String request = "username=" + strings[0]+
+                    "&key=" +strings[1];
+            String url = Constant.url_logout + request;
+
+            String s =  ProcessData.getInstance().docNoiDung_Tu_URL(url);
+
+            String result = ProcessData.getInstance().xmlParseLogin(ProcessData.getInstance().getDomElement(s));
+
+            System.out.println("LOGOUT :"+result);
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            finish();
+
+        }
     }
 
 
@@ -216,6 +245,9 @@ public class ListTableActivity extends ActionBarActivity implements Constant {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+       (new LogoutTask()).execute(MainActivity.getUserName(),MainActivity.getKey());
+        System.out.println("LOGOUTTTTTT");
         stopService(new Intent(this, RefreshService.class));
         unregisterReceiver(receiver);
     }
@@ -231,4 +263,6 @@ public class ListTableActivity extends ActionBarActivity implements Constant {
         super.onPause();
         stopService(new Intent(this, RefreshService.class));
     }
+
+
 }
