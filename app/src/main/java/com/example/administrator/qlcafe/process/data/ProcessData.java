@@ -2,6 +2,9 @@ package com.example.administrator.qlcafe.process.data;
 
 import android.util.Log;
 
+import com.example.administrator.qlcafe.model.BillDetail;
+import com.example.administrator.qlcafe.model.Food;
+import com.example.administrator.qlcafe.model.ItemOrder;
 import com.example.administrator.qlcafe.model.Table;
 
 import org.w3c.dom.Document;
@@ -122,7 +125,7 @@ public class ProcessData {
         }
         return tables;
     }
-    //------------ read xml login list
+    //------------ read xml login
     public String xmlParseLogin(Document doc){
         String result =null;
 
@@ -140,4 +143,91 @@ public class ProcessData {
         System.out.println("REUSLT : "+ result);
         return result;
     }
+
+    //------------ read xml menu list
+    //--------------------------- read table list xml
+    public ArrayList<Food> xmlParseMenu(Document doc){
+        Element root = doc.getDocumentElement();
+        NodeList list = root.getChildNodes();
+
+        System.out.println("@@@@PARSE");
+        ArrayList<Food> menu = new ArrayList<>();
+        System.out.println("LENGTH = " + list.getLength());
+        for(int i=0;i<list.getLength();++i){
+            Node node = list.item(i);
+            if(node instanceof  Element){
+                Element table = (Element) node;
+                NodeList listChild = table.getElementsByTagName("id_Menu");
+                int id_Food = Integer.parseInt(listChild.item(0).getTextContent());
+                listChild = table.getElementsByTagName("name");
+                String name_Food = listChild.item(0).getTextContent();
+                listChild = table.getElementsByTagName("link");
+                String img_url = listChild.item(0).getTextContent();
+                listChild = table.getElementsByTagName("price");
+                float piceF =Float.parseFloat(listChild.item(0).getTextContent());
+                int price = (int)piceF;
+                System.out.println(id_Food + " - " + name_Food + " - " + img_url + " - "+ price);
+                Food item = new Food(id_Food,name_Food,price,img_url);
+                menu.add(item);
+            }
+        }
+        return menu;
+    }
+
+
+    //-------- read xml detail
+    public BillDetail xmlParseBillDetail(Document doc){
+        BillDetail bill = new BillDetail();
+        ArrayList<ItemOrder> dsOrder = new ArrayList<>();
+
+        Element root = doc.getDocumentElement();
+        NodeList list = root.getChildNodes();
+        Node n = list.item(0);
+        Element e = (Element)n;
+        System.out.println("re : " + e.getNodeName());
+
+        NodeList listChild = e.getChildNodes();
+
+        //--- sum
+        Node sum = listChild.item(listChild.getLength()-1);
+        System.out.println("NODE NAMEEE: "+ sum.getNodeName());
+        Element eSum = (Element) sum;
+
+        float sumOrder = Float.parseFloat(eSum.getTextContent());
+        System.out.println("SUM  : " + eSum.getNodeName()+ " - "+ eSum.getTextContent() + " - " + sumOrder);
+        if(sumOrder == 0 ){
+            System.out.println("deo co con me j ca");
+            bill.setSum(0);
+            return bill;
+        }
+
+
+        //get bill detail
+        for(int i=0;i<listChild.getLength()-1;++i){
+            Node node = listChild.item(i);
+            Element element = (Element)node;
+            System.out.println("NODE NAME : "+ node.getNodeName());
+
+            NodeList listChildren = element.getElementsByTagName("id_menu");
+            int id_Food = Integer.parseInt(listChildren.item(0).getTextContent());
+            listChildren = element.getElementsByTagName("count_menu");
+            int count =Integer.parseInt(listChildren.item(0).getTextContent());
+            listChildren = element.getElementsByTagName("cost_menu");
+            float cost =Float.parseFloat(listChildren.item(0).getTextContent());
+            listChildren = element.getElementsByTagName("count_money");
+            float sumElement = Float.parseFloat(listChildren.item(0).getTextContent());
+
+            ItemOrder item = new ItemOrder(id_Food,count,0,(int)sumElement,(int)cost);
+            dsOrder.add(item);
+            System.out.println( id_Food + " - "+ count + " - "+ cost + " - "+ sumElement);
+        }
+
+
+
+        bill.setDsOrder(dsOrder);
+        bill.setSum((long)sumOrder);
+
+        return bill;
+    }
+    //--
 }

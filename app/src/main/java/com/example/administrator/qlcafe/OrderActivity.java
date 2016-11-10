@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -25,6 +26,8 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
     ViewPager viewPager;
     TabHost tabHost;
     TextView title;
+
+    ImageButton imgBack;
 
     MyFragmentPageAdapter myFragmentPageAdapter;
     Table banSelected;
@@ -104,10 +107,16 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
 
     private void addControls() {
         title = (TextView)findViewById(R.id.tvTitle);
+        imgBack = (ImageButton)findViewById(R.id.imgBtnBack);
     }
 
     private void addListener() {
-
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finishOrder();
+            }
+        });
     }
 
     @Override
@@ -156,5 +165,18 @@ public class OrderActivity extends FragmentActivity implements  TabHost.OnTabCha
     public void refresh(){
         myFragmentPageAdapter.replace(new MyOrderFragment(),0);
         myFragmentPageAdapter.notifyDataSetChanged();
+    }
+
+    public void finishOrder(){
+        Intent intent = getIntent();
+        setResult(Constant.REFRESH_ACTIVITY,intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.out.println("TAO NHAN NUT BACK");
+        finishOrder();
     }
 }

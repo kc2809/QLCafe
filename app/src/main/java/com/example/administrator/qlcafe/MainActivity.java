@@ -9,13 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.administrator.qlcafe.process.data.ProcessData;
 
 import org.apache.http.HttpEntity;
@@ -29,8 +22,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainActivity extends Activity implements Constant{
@@ -72,11 +63,16 @@ public class MainActivity extends Activity implements Constant{
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //check valid account
-                String username = edtUsername.getText().toString();
-                String password = edtPassword.getText().toString();
-                setUserName(username);
-                (new PostLoginTask()).execute(username, password);
+
+                    //check valid account
+                    String username = edtUsername.getText().toString();
+                    String password = edtPassword.getText().toString();
+                    setUserName(username);
+                    (new PostLoginTask()).execute(username, password);
+
+
+
+
 
             }
         });
@@ -178,6 +174,5 @@ public class MainActivity extends Activity implements Constant{
     }
 
     //-----------
-
 
 }

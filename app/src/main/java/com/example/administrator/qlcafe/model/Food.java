@@ -16,6 +16,8 @@ public class Food implements Serializable{
         this.name = name;
     }
 
+
+
     public Food(int id_food, String name, int price) {
         this.id_food = id_food;
         this.name = name;

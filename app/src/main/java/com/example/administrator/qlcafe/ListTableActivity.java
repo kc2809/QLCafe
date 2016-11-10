@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -35,11 +34,22 @@ public class ListTableActivity extends Activity implements Constant {
     //------------------
     ImageView imgLogout,imgRefresh;
 
-    public static ArrayList<Food> menuFood;
+    public static ArrayList<Food> menuFood=new ArrayList<>();
 
     MyDatabase database;
 
     BroadcastReceiver receiver;
+
+
+    public static Food searchFood(int id){
+        Food d=null ;
+        for(int i=0;i<menuFood.size();++i){
+            if(menuFood.get(i).getId_food() == id){
+                return menuFood.get(i);
+            }
+        }
+        return d;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +59,7 @@ public class ListTableActivity extends Activity implements Constant {
         init();
 
         //example data food
-        initData();
+//        initData();
 
         getControls();
 
@@ -58,12 +68,22 @@ public class ListTableActivity extends Activity implements Constant {
  //       setDataFromDatabase();
 
 
-        runOnUiThread(new Runnable() {
+       runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 new docJSOn().execute(url_table_list+MainActivity.getKey());
             }
         });
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new MenuTask().execute(url_Menu_list+MainActivity.getKey());
+            }
+        });
+
+
+
         receiverFromService();
 
     }
@@ -124,12 +144,17 @@ public class ListTableActivity extends Activity implements Constant {
         girdView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(arrTable.get(i).getStatus() == 0){
+                    database.freeTableById(arrTable.get(i).getId());
+                }
+
+
                 Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ListTableActivity.this,OrderActivity.class);
                 Bundle b = new Bundle();
                 b.putSerializable("BAN", arrTable.get(i));
                 intent.putExtra("DATA", b);
-                startActivity(intent);
+                startActivityForResult(intent, Constant.OPEN_ORDER_ACTIVITY);
             }
         });
 
@@ -152,13 +177,13 @@ public class ListTableActivity extends Activity implements Constant {
     private void logOut() {
         Toast.makeText(ListTableActivity.this,"LOG OUT",Toast.LENGTH_LONG).show();
 
-        (new LogoutTask()).execute(MainActivity.getUserName(),MainActivity.getKey());
+        (new LogoutTask()).execute(MainActivity.getUserName(), MainActivity.getKey());
 
     }
 
     private void refresh() {
         Toast.makeText(ListTableActivity.this,"Refresh",Toast.LENGTH_LONG).show();
-        (new docXMLUpdate()).execute(Constant.url_table_list+MainActivity.getKey());
+        (new UpdateTableTask()).execute(Constant.url_table_list + MainActivity.getKey());
     }
 
     private void getControls() {
@@ -211,8 +236,8 @@ public class ListTableActivity extends Activity implements Constant {
         }
     }
 
-    //---- update
-    class docXMLUpdate extends AsyncTask<String,Integer,String> {
+    //-------- update table
+    class UpdateTableTask extends AsyncTask<String,Integer,String> {
         protected String doInBackground(String... params){
             return  ProcessData.getInstance().docNoiDung_Tu_URL(params[0]);
         }
@@ -221,9 +246,39 @@ public class ListTableActivity extends Activity implements Constant {
             System.out.println("----k@@@ : "+ s);
             Document doc =  ProcessData.getInstance().getDomElement(s);
             ArrayList<Table> arr =  ProcessData.getInstance().xmlParse(doc);
+            database.updateAllStatusTable(arr);
             setDataFromDatabase();
         }
     }
+
+
+    //-------------------
+
+
+    //--------- read menu list
+    class MenuTask extends AsyncTask<String,Void ,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return ProcessData.getInstance().docNoiDung_Tu_URL(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            System.out.println("noi dung: "+s);
+            Document doc = ProcessData.getInstance().getDomElement(s);
+            menuFood = ProcessData.getInstance().xmlParseMenu(doc);
+        }
+    }
+    //---------------------
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("TAO NHAN DUOC BACK O NGOAI");
+        refresh();
+ }
 
 
     //----------------------------------------
@@ -246,8 +301,6 @@ public class ListTableActivity extends Activity implements Constant {
     protected void onDestroy() {
         super.onDestroy();
 
-       (new LogoutTask()).execute(MainActivity.getUserName(),MainActivity.getKey());
-        System.out.println("LOGOUTTTTTT");
         stopService(new Intent(this, RefreshService.class));
         unregisterReceiver(receiver);
     }
@@ -263,6 +316,5 @@ public class ListTableActivity extends Activity implements Constant {
         super.onPause();
         stopService(new Intent(this, RefreshService.class));
     }
-
 
 }

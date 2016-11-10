@@ -55,28 +55,36 @@ public class MyOrderFragment extends Fragment implements Constant {
         lvDetail.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                position = i;
-                selectedItem = order.getDsOrder().get(i);
-                Intent intent = new Intent(getActivity(), ModifyQuantityActivity.class);
-                Bundle b = new Bundle();
-                b.putSerializable("ITEMORDER",selectedItem);
-                b.putInt("REQUEST", OPEN_MODIFY_ACTIVITY);
-                b.putInt("QUANTITY",selectedItem.getSoLuong());
-                intent.putExtra("DATA",b);
-                startActivityForResult(intent, OPEN_MODIFY_ACTIVITY);
+                if(order.getDsOrder().get(i).getTrangThai()==0){
+                    //da duoc order thi khong duoc modify
+                    position = i;
+                    selectedItem = order.getDsOrder().get(i);
+                    Intent intent = new Intent(getActivity(), ModifyQuantityActivity.class);
+                    Bundle b = new Bundle();
+                    b.putSerializable("ITEMORDER",selectedItem);
+                    b.putInt("REQUEST", OPEN_MODIFY_ACTIVITY);
+                    b.putInt("QUANTITY",selectedItem.getSoLuong());
+                    intent.putExtra("DATA",b);
+                    startActivityForResult(intent, OPEN_MODIFY_ACTIVITY);
+                }
+
+
             }
         });
 
         lvDetail.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                final int position = i;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("Are you sure to delete this order... ? ")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
+                                order.removeById(position);
+                                database.updateTableByOrder(order);
+                                refresh();
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -111,6 +119,7 @@ public class MyOrderFragment extends Fragment implements Constant {
         order = database.loadOrderDataFromTable_tblById(banSelected.getId());
     //    System.out.println("Tao refresh day "+ order.toString());
         adapter = new OrderItemAdapter(getActivity(),R.layout.item_order_layout,order.getDsOrder());
+        tvTotalPrice.setText(String.format("%,d",order.tongtienOrder()));
         lvDetail.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -127,7 +136,8 @@ public class MyOrderFragment extends Fragment implements Constant {
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                database.freeTableById(order.getTable().getId());
+                refresh();
             }
         });
     }

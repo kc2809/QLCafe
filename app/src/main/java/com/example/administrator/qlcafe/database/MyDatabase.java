@@ -179,6 +179,7 @@ public class MyDatabase {
 
 
     public Order loadOrderDataFromTable_tblById(int id){
+        System.out.println("TAO DANG LOAD ORDER");
         Order item=new Order();
         Cursor cursor;
         cursor = database.query("table_tbl",null,"id="+ id,null,null,null,null);
@@ -196,10 +197,11 @@ public class MyDatabase {
 
 
             if(!cursor.getString(cursor.getColumnIndex("idmon")).equals("")) {
-                item.setDsOrderByString( cursor.getString(cursor.getColumnIndex("idmon")),
+                item.setDsOrderByString(cursor.getString(cursor.getColumnIndex("idmon")),
                         cursor.getString(cursor.getColumnIndex("soluong")),
                         cursor.getString(cursor.getColumnIndex("dstrangthai")));
             }
+            System.out.println(item.toString());
         }
         System.out.println("IN DATABASE : "+ item.toString());
         cursor.close();
