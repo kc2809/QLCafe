@@ -110,13 +110,16 @@ public class MainActivity extends Activity implements Constant{
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if(s==null){
+                Toast.makeText(MainActivity.this,"Failed to connect Internet.\nTry again",Toast.LENGTH_LONG).show();
+                return;
+            }
             if(s.equals("false")){
                 Toast.makeText(MainActivity.this,"Username or Password is wrong.\nTry Again",Toast.LENGTH_LONG).show();
             }
             else{
-                setKey(s);
-                Toast.makeText(MainActivity.this,"OK",Toast.LENGTH_LONG).show();
-                startListTableActivity();
+                    setKey(s);
+                    startListTableActivity();
             }
         }
     }

@@ -128,19 +128,23 @@ public class ProcessData {
     //------------ read xml login
     public String xmlParseLogin(Document doc){
         String result =null;
+        try{
+            Element root = doc.getDocumentElement();
+            System.out.println("ROOT : " +root.getNodeName());
+            NodeList list = root.getChildNodes();
+            Node n = list.item(0);
+            System.out.println("ITEM : " + n.getNodeName());
+            Element e = (Element) n;
+            System.out.println("re : " + e.getTextContent());
 
-        Element root = doc.getDocumentElement();
-        System.out.println("ROOT : " +root.getNodeName());
-        NodeList list = root.getChildNodes();
-        Node n = list.item(0);
-        System.out.println("ITEM : " + n.getNodeName());
-        Element e = (Element) n;
-        System.out.println("re : " + e.getTextContent());
 
+            result = e.getTextContent();
 
-        result = e.getTextContent();
-
-        System.out.println("REUSLT : "+ result);
+            System.out.println("REUSLT : "+ result);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -152,7 +156,7 @@ public class ProcessData {
 
         System.out.println("@@@@PARSE");
         ArrayList<Food> menu = new ArrayList<>();
-        System.out.println("LENGTH = " + list.getLength());
+    //    System.out.println("LENGTH = " + list.getLength());
         for(int i=0;i<list.getLength();++i){
             Node node = list.item(i);
             if(node instanceof  Element){

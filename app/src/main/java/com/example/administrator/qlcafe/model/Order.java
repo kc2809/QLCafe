@@ -58,7 +58,7 @@ public class Order {
     public void comfirmOrder(){
         //send order that has status is 0
         // sendOrder(dsOrder.get(i))
-        System.out.println("danh sach ORDER: \n");
+     //   System.out.println("danh sach ORDER: \n"+toString());
         ArrayList<ItemOrder> dsOrderServer = new ArrayList<>();
         for(int i =0;i<dsOrder.size();i++){
            if(dsOrder.get(i).getTrangThai()== 0){
@@ -196,14 +196,14 @@ public class Order {
     public String xmlString(ArrayList<ItemOrder> listOrder){
         String xml="<orders>\n";
 
-        for(int i=0;i<dsOrder.size();++i){
+        for(int i=0;i<listOrder.size();++i){
             xml +="<orders>\n";
                 xml += "<id_menu>" +
-                 dsOrder.get(i).getIdMon() +
+                        listOrder.get(i).getIdMon() +
                 "</id_menu>\n";
 
                 xml += "<count_menu>" +
-                 dsOrder.get(i).getSoLuong() +
+                        listOrder.get(i).getSoLuong() +
                 "</count_menu>\n";
 
             xml +="</orders>\n";
@@ -228,6 +228,7 @@ public class Order {
             }
         }
 
+        result +="END";
         return result;
 
     }
