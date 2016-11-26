@@ -291,7 +291,8 @@ public class ListTableActivity extends Activity implements Constant {
             public void onReceive(Context context, Intent intent) {
                 //refresh ui
                 System.out.println("@@@@@@@ HAHAHAHAHA @@@@@@@");
-                setDataFromDatabase();
+           //     setDataFromDatabase();
+                refresh();
             }
         };
         registerReceiver(receiver,intentFilter);
