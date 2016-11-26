@@ -121,8 +121,8 @@ public class PaymentFragment extends Fragment {
             int id = bill.getDsOrder().get(count).getIdMon();
             ten.setText(ListTableActivity.searchFood(id).getName());
             soluong.setText(bill.getDsOrder().get(count).getSoLuong()+"");
-            dongia.setText(bill.getDsOrder().get(count).getDongia()+"");
-            thanhtien.setText(bill.getDsOrder().get(count).getThanhtien()+"");
+            dongia.setText( String.format("%,d",bill.getDsOrder().get(count).getDongia())+"");
+            thanhtien.setText(  String.format("%,d",bill.getDsOrder().get(count).getThanhtien())+"");
 
 
             row.addView(ten);
@@ -140,7 +140,7 @@ public class PaymentFragment extends Fragment {
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tvThanhTien.setTypeface(null, Typeface.BOLD);
         tvThanhTien.setTextSize(20);
-        tvThanhTien.setText("Tổng:      " + bill.getSum()+ "  VND");
+        tvThanhTien.setText("Tổng:      " + String.format("%,d",bill.getSum()) + "  VND");
 
         TableRow.LayoutParams params = (TableRow.LayoutParams)tvThanhTien.getLayoutParams();
         params.span = 4;
@@ -182,7 +182,7 @@ public class PaymentFragment extends Fragment {
        //     finishOrderActivity();
            if(bill.getSum() == 0){
                //flase
-               Toast.makeText(getActivity(),"chua co con me j ca ",Toast.LENGTH_LONG).show();
+               Toast.makeText(getActivity(),"Bàn đã tính tiền rồi. ",Toast.LENGTH_LONG).show();
            }
            else{
                loadDataServer(bill);

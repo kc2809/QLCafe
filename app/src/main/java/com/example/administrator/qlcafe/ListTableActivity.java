@@ -149,7 +149,7 @@ public class ListTableActivity extends Activity implements Constant {
                 }
 
 
-                Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
+         //       Toast.makeText(ListTableActivity.this,arrTable.get(i).toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ListTableActivity.this,OrderActivity.class);
                 Bundle b = new Bundle();
                 b.putSerializable("BAN", arrTable.get(i));

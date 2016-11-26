@@ -40,7 +40,8 @@
         android:layout_alignLeft="@+id/edtUsername"
         android:layout_alignStart="@+id/edtUsername"
         android:textSize="30dp"
-        android:textColorHint="#ffffff" />
+        android:textColorHint="#ffffff"
+        android:inputType="textPassword" />
 
     <TextView
         android:layout_width="match_parent"
